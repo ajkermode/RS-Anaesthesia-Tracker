@@ -8,11 +8,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Planner">
+<meta name="apple-mobile-web-app-title" content="RS Tracker">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <link rel="icon" href="icon-192.png?v=2">
-<title>Leave Planner</title>
+<title>RS Anaesthesia Tracker</title>
 <style id="app-css">
 :root{
   /* Layout: iOS grouped-inset lists on a tinted page. Bottom tab bar on phones, floating top bar on wider screens. The day editor is a sheet. */
@@ -147,14 +147,6 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill
 .chip.H{background:var(--purple-tint);color:var(--purple-ink)}
 .chip.blk{background:var(--indigo-tint);color:var(--indigo-ink)}
 .chip.oc{background:var(--oc);color:var(--on-oc)}
-.tg{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 4px;border-radius:6px;font-size:11px;font-weight:700;color:var(--on-tag);flex:none}
-.tg.motion{background:var(--purple-ink)}.tg.home{background:var(--teal-ink)}.tg.dl{background:var(--indigo-ink)}.tg.other{background:var(--gray-ink)}
-.wo{display:inline-flex;align-items:center;gap:6px;max-width:100%;height:26px;padding:0 9px 0 3px;border-radius:8px;font-size:13px}
-.wo .tx{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.wo.motion{background:var(--purple-tint)}.wo.home{background:var(--teal-tint)}.wo.dl{background:var(--indigo-tint)}.wo.other{background:var(--gray-tint)}
-.wo.mini{height:22px;padding:0 8px 0 2px;font-weight:600}
-.wo.mini .tg{height:18px;min-width:20px;font-size:10px}
-.sugg{display:inline-block;height:24px;line-height:22px;padding:0 9px;border-radius:7px;border:1px dashed var(--green);color:var(--green-ink);font-size:13px;font-weight:500}
 .add{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--fill);color:var(--blue-ink)}
 .pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 7px;border-radius:6px;background:var(--fill);margin-right:6px;white-space:nowrap}
 .pill.pref{background:var(--orange-tint);color:var(--orange-ink)}
@@ -168,6 +160,7 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill
 .nav .ttl small{display:block;font-size:13px;font-weight:400;letter-spacing:0;color:var(--ink2);margin-top:1px}
 /* stats */
 .stats{display:grid;gap:1px;background:var(--sep);border-radius:14px;overflow:hidden;margin:0 0 22px}
+.stats.n1{grid-template-columns:1fr}
 .stats.n3{grid-template-columns:repeat(3,1fr)}
 .stats.n4{grid-template-columns:repeat(2,1fr)}
 .stat{background:var(--card);padding:11px 14px;min-width:0}
@@ -186,12 +179,7 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill
 .dayrow.past .cols{opacity:.5}
 .cell{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-width:0;min-height:26px}
 .nt{font-size:13px;color:var(--ink2);white-space:pre-wrap;border-left:2px solid var(--fill2);padding-left:8px}
-.wfoot{display:flex;flex-wrap:wrap;gap:14px 32px}
-.wfoot>div{min-width:120px}
-.wfoot .n{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
-.wfoot .fb{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
 .copyrow{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
-.wfoot+.copyrow{margin-top:14px;padding-top:14px;border-top:.5px solid var(--sep)}
 /* month */
 .mgrid{display:grid;grid-template-columns:20px repeat(7,minmax(0,1fr));gap:3px}
 .mgrid .mh{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--ink2);text-align:center;padding-bottom:2px}
@@ -215,10 +203,6 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill
 .mc .rl{color:var(--blue-ink);-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .mc .tag{color:var(--indigo-ink);white-space:nowrap;text-overflow:ellipsis}
 .mc .tag.bh{color:var(--purple-ink)}
-.mc .ws{display:flex;flex-wrap:wrap;gap:2px}
-.mc .w1{display:flex;align-items:center;gap:4px;font-size:11px;min-width:0}
-.mc .w1 .tg{min-width:17px;height:15px;border-radius:4px;font-size:9.5px;padding:0 3px}
-.mc .w1 span:last-child{display:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)}
 .dot{width:6px;height:6px;border-radius:50%;display:inline-block}
 .dot.oc{background:var(--oc)}.dot.nt{background:var(--ink3)}
 .b-C{background:var(--blue)}.b-R{background:var(--green)}.b-O{background:var(--fill2)}.b-F{background:var(--ink2)}.b-L{background:var(--leave)}.b-T{background:var(--orange-tint);box-shadow:inset 0 0 0 1px var(--orange)}.b-H{background:var(--purple)}.b-E{background:transparent}
@@ -262,7 +246,6 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill
 .lta{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
 .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .pat{display:grid;grid-template-columns:44px repeat(5,minmax(118px,1fr));gap:4px;min-width:650px}
-.pat.w7{grid-template-columns:50px repeat(7,minmax(84px,1fr));min-width:660px}
 .pat .ph{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--ink2);padding:2px 4px}
 .pat .pw{font-size:13px;font-weight:600;padding:8px 2px}
 .pat .pc{background:var(--fill);border-radius:9px;padding:6px;display:flex;flex-direction:column;gap:3px}
@@ -286,12 +269,6 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill
 .sb{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px 16px calc(22px + env(safe-area-inset-bottom))}
 .sb .sec{margin-bottom:18px}
 .slot .k{width:34px;font-size:12px;font-weight:600;color:var(--ink2)}
-.wcard{padding:10px 12px;display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
-.wcard select{min-width:0;width:100%}
-.wcard .w2{grid-column:1/-1;display:flex;gap:8px}
-.wcard .w2 select{width:auto;flex:none}
-.wcard .w2 input{flex:1;min-width:0}
-.wcard .rm{border:0;background:none;color:var(--ink3);padding:4px;border-radius:50%}
 .addrow{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
 .addrow button{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:0;border-radius:11px;background:var(--card);font-size:15px;font-weight:500}
 .addrow button:active{background:var(--press)}
@@ -316,8 +293,6 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill
   .mc{min-height:98px;padding:6px 7px;border-radius:10px}
   .mc .rl{display:-webkit-box}
   .mc .tag{display:block}
-  .mc .ws{flex-direction:column;flex-wrap:nowrap}
-  .mc .w1 span:last-child{display:block}
   input[type=date],input[type=number],input[type=text],input[type=password],select,textarea{font-size:15px}
   .scrim{align-items:center;padding:24px}
   .sheet{border-radius:16px;max-height:min(92%,820px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
@@ -337,7 +312,7 @@ code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--fill
 <body>
 <div id="app"></div>
 <div class="scrim" id="scrim"><div class="sheet" id="dlg" role="dialog" aria-modal="true" aria-label="Day"></div></div>
-<script id="app-state" type="application/json">{"v":2,"anchor":"2026-11-16","researchFree":true,"pattern":null,"leave":{},"onCall":{},"workouts":{},"notes":{},"blocks":[{"id":"b1","label":"Feb half-term","start":"2027-02-15","end":"2027-02-19","kind":"booked"},{"id":"b2","label":"Easter – Club La Santa","start":"","end":"","kind":"booked"},{"id":"b3","label":"May half-term (pool full)","start":"2027-05-31","end":"2027-06-04","kind":"unavailable"}],"woTemplate":{}}</script>
+<script id="app-state" type="application/json">{"v":2,"anchor":"2026-11-16","researchFree":true,"pattern":null,"leave":{},"onCall":{},"notes":{},"blocks":[{"id":"b1","label":"Feb half-term","start":"2027-02-15","end":"2027-02-19","kind":"booked"},{"id":"b2","label":"Easter – Club La Santa","start":"","end":"","kind":"booked"},{"id":"b3","label":"May half-term (pool full)","start":"2027-05-31","end":"2027-06-04","kind":"unavailable"}]}</script>
 <script id="app-js">
 (function(){
 "use strict";
@@ -348,10 +323,6 @@ var FULLMON=["January","February","March","April","May","June","July","August","
 var PREF={0:1,3:1,4:1};
 var TYPE_NAME={C:"Clinical",R:"Research",O:"Free",F:"Fixed",E:"None",L:"Leave",H:"Bank holiday",T:"Other leave"};
 var CYCLE=["C","R","O","F","E"];
-var WT={motion:{n:"Motion",long:"Motion (CrossFit)",t:"M"},home:{n:"Home Gym",long:"Home Gym (Shift)",t:"H"},dl:{n:"David Lloyd",long:"David Lloyd",t:"DL"},other:{n:"Other",long:"Other",t:"O"}};
-var WTK=["motion","home","dl","other"];
-var WHEN={"":"Any time",pre:"Pre-work",am:"Morning",lunch:"Lunch",pm:"Afternoon",eve:"Evening"};
-var WHENK=["","pre","am","lunch","pm","eve"];
 var BH={"2026-12-25":"Christmas Day","2026-12-28":"Boxing Day (substitute)","2027-01-01":"New Year's Day","2027-03-26":"Good Friday","2027-03-29":"Easter Monday","2027-05-03":"Early May bank holiday","2027-05-31":"Spring bank holiday","2027-08-30":"Summer bank holiday","2027-12-27":"Christmas Day (substitute)","2027-12-28":"Boxing Day (substitute)","2028-01-03":"New Year's Day (substitute)","2028-04-14":"Good Friday","2028-04-17":"Easter Monday","2028-05-01":"Early May bank holiday","2028-05-29":"Spring bank holiday","2028-08-28":"Summer bank holiday","2028-12-25":"Christmas Day","2028-12-26":"Boxing Day"};
 
 function defaultPattern(){
@@ -365,12 +336,6 @@ function defaultPattern(){
   p[3][4]=["O","C","E"];
   return p;
 }
-var DEFAULT_WO=[
-  ["","Workout","","Workout","Workout","Workout","Workout"],
-  ["Workout","Workout","","","Workout","Workout","Workout"],
-  ["Workout","PM workout","Workout","","","Workout","Workout"],
-  ["","Workout","","Workout","","Workout","Workout"]
-];
 var FIXNAME={"0":"ECT","1":"Private list"};
 
 var S=JSON.parse(document.getElementById("app-state").textContent);
@@ -400,10 +365,7 @@ function migrate(){
   if(S.annual==null){S.annual=37;S.yearStart="08-04";S.adjust={"2026-08-04":5};}
   if(!S.adjust)S.adjust={};
   if(!S.notes)S.notes={};
-  if(!S.workouts)S.workouts={};
-  if(!S.motionPlans)S.motionPlans=[{from:"2026-11",n:5}];
   if(!S.fixedNames)S.fixedNames=FIXNAME;
-  if(S.dlEnd===undefined)S.dlEnd="2026-12-31";
   if(!S.pa)S.pa={dcc:7.092,spa:2,apa:3,weeks:42,premH:3,stdH:4};
   if(!S.pa.items)S.pa.items=[
     {n:"Theatre – Operating Session",pa:5.3127,k:"sched"},
@@ -415,11 +377,6 @@ function migrate(){
     {n:"Essential SPA – STATMAN, appraisal, job planning, CPD",pa:1.5,k:"spa"},
     {n:"Other SPA – Educational Supervisor",pa:0.5,k:"spa"},
     {n:"Professional Director (inc. DME)",pa:3,k:"apa"}];
-  Object.keys(S.workouts).forEach(function(k){
-    var v=S.workouts[k];
-    if(typeof v==="string"){S.workouts[k]=v?[{t:"other",w:"",n:v}]:[];}
-    if(!S.workouts[k]||!S.workouts[k].length)delete S.workouts[k];
-  });
   delete S.allowance;delete S.endDate;
   cleanLeave();
   S.v=2;
@@ -573,25 +530,6 @@ function nextDateFor(w,wd){
   return null;
 }
 
-// ---------- workouts ----------
-function wos(k){return S.workouts[k]||[];}
-// Workout types offered on a day: David Lloyd stops being offered after its last day, but existing entries stay
-function wtkOn(k,keep){return WTK.filter(function(t){return t!=="dl"||t===keep||!S.dlEnd||k<=S.dlEnd;});}
-function woTemplate(d){
-  var w=rotaWeek(d)%4,wd=dow(d),key=w+"-"+wd;
-  if(S.woTemplate&&S.woTemplate[key]!=null)return S.woTemplate[key];
-  return DEFAULT_WO[w][wd];
-}
-function motionLimit(m){
-  var n=5;S.motionPlans.slice().sort(function(a,b){return a.from<b.from?-1:1;}).forEach(function(p){if(p.from<=m)n=p.n;});
-  return n;
-}
-function motionCount(m){
-  var n=0;Object.keys(S.workouts).forEach(function(k){if(k.slice(0,7)===m)wos(k).forEach(function(x){if(x.t==="motion")n++;});});
-  return n;
-}
-function woLabel(x,short){return (short?WT[x.t].n:WT[x.t].long)+(x.w?" · "+WHEN[x.w]:"")+(x.n?" – "+x.n:"");}
-
 // ---------- describing a day ----------
 function slotName(d,t){return t==="F"?fixedName(d):t==="T"?otherLeaveName(d):TYPE_NAME[t];}
 var SI={am:0,pm:1,eve:2,night:3},SN=["AM","PM","Eve","Night"];
@@ -637,7 +575,7 @@ function workTextPlan(d){
 
 // ---------- persistence ----------
 function snapshot(){return JSON.stringify(S).replace(/</g,"\\u003c");}
-var HEAD="<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n<title>Leave Planner</title>",SHELL="<div id=\"app\"></div>\n<div class=\"scrim\" id=\"scrim\"><div class=\"sheet\" id=\"dlg\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Day\"></div></div>";
+var HEAD="<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n<title>RS Anaesthesia Tracker</title>",SHELL="<div id=\"app\"></div>\n<div class=\"scrim\" id=\"scrim\"><div class=\"sheet\" id=\"dlg\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Day\"></div></div>";
 function buildDoc(){
   var css=document.getElementById("app-css").textContent,js=document.getElementById("app-js").textContent;
   return "<!DOCTYPE html>\n<html lang=\"en-GB\">\n<head>\n"+HEAD+"\n<style id=\"app-css\">"+css+"</style>\n</head>\n<body>\n"+SHELL+"\n<script id=\"app-state\" type=\"application/json\">"+snapshot()+"<\/script>\n<script id=\"app-js\">"+js+"<\/script>\n</body>\n</html>\n";
@@ -766,12 +704,10 @@ function paYTD(){
 }
 function hm(t){var p=(t||"0:0").split(":");return (+p[0])*60+(+p[1]);}
 function periodStats(start,n){
-  var st={clin:0,res:0,leave:0,wo:0,by:{},months:[]};
+  var st={clin:0,res:0,leave:0};
   for(var i=0;i<n;i++){
     var d=add(start,i),k=K(d),e=eff(d);
     if(e)e.forEach(function(t,j){if(t==="C")st.clin++;if(t==="R")st.res++;if(t==="L"&&j!==2)st.leave++;});
-    wos(k).forEach(function(x){st.wo++;st.by[x.t]=(st.by[x.t]||0)+1;});
-    var m=ym(d);if(st.months.indexOf(m)<0)st.months.push(m);
   }
   return st;
 }
@@ -780,14 +716,12 @@ function weekSummary(start,n){
   var title=(n>7?"Fortnight":"Week")+" of "+fmt(start)+" "+start.getFullYear();
   var sum=[
     "Rota "+(n>7?"Weeks "+(rotaWeek(start)+1)+" & "+(rotaWeek(add(start,7))+1):"Week "+(rotaWeek(start)+1))+" · "+fmtS(start)+" – "+fmtS(end),
-    "Clinical sessions: "+st.clin+" · Research: "+st.res+" · Leave: "+st.leave,
-    "Workouts: "+st.wo+(st.wo?" ("+WTK.filter(function(x){return st.by[x];}).map(function(x){return WT[x].n+" "+st.by[x];}).join(", ")+")":""),
-    st.months.map(function(m){return "Motion in "+FULLMON[+m.slice(5)-1]+": "+motionCount(m)+" of "+motionLimit(m);}).join(" · ")
+    "Clinical sessions: "+st.clin+" · Research: "+st.res+" · Leave: "+st.leave
   ];
   var days=[];
   for(var i=0;i<n;i++){
     var d=add(start,i),k=K(d);
-    days.push({d:d,head:fmt(d),work:workText(d),fit:wos(k).map(function(x){return woLabel(x,true);}),note:S.notes[k]||"",wk:(n>7&&i%7===0)?"Rota Week "+(rotaWeek(d)+1):""});
+    days.push({d:d,head:fmt(d),work:workText(d),note:S.notes[k]||"",wk:(n>7&&i%7===0)?"Rota Week "+(rotaWeek(d)+1):""});
   }
   var plain=title+"\n"+sum.join("\n")+"\n";
   var md="## "+title+"\n\n"+sum.map(function(s){return "- "+s;}).join("\n")+"\n";
@@ -796,9 +730,9 @@ function weekSummary(start,n){
   days.forEach(function(x){
     if(x.wk){plain+="\n"+x.wk.toUpperCase()+"\n";md+="\n### "+x.wk+"\n";if(open)html+="</ul>";html+="<h4>"+esc(x.wk)+"</h4><ul>";open=true;}
     if(!open){html+="<ul>";open=true;md+="\n";plain+="\n";}
-    plain+=x.head+" – "+x.work+"\n"+(x.fit.length?"   Fitness: "+x.fit.join("; ")+"\n":"")+(x.note?"   Note: "+x.note.replace(/\n/g," ")+"\n":"");
-    md+="- **"+x.head+"** – "+x.work+(x.fit.length?"\n  - Fitness: "+x.fit.join("; "):"")+(x.note?"\n  - Note: "+x.note.replace(/\n/g," "):"")+"\n";
-    html+="<li><b>"+esc(x.head)+"</b> – "+esc(x.work)+(x.fit.length?"<br>Fitness: "+esc(x.fit.join("; ")):"")+(x.note?"<br><i>"+esc(x.note)+"</i>":"")+"</li>";
+    plain+=x.head+" – "+x.work+"\n"+(x.note?"   Note: "+x.note.replace(/\n/g," ")+"\n":"");
+    md+="- **"+x.head+"** – "+x.work+(x.note?"\n  - Note: "+x.note.replace(/\n/g," "):"")+"\n";
+    html+="<li><b>"+esc(x.head)+"</b> – "+esc(x.work)+(x.note?"<br><i>"+esc(x.note)+"</i>":"")+"</li>";
   });
   html+="</ul>";
   return {plain:plain,md:md,html:html};
@@ -847,16 +781,15 @@ var IC={
   leave:"<circle cx='12' cy='12' r='4'/><path d='M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8'/>",
   setup:"<path d='M4 7h9M17 7h3M4 17h3M11 17h9'/><circle cx='15' cy='7' r='2'/><circle cx='9' cy='17' r='2'/>",
   chevL:"<path d='M15 5l-7 7 7 7'/>",chevR:"<path d='M9 5l7 7-7 7'/>",plus:"<path d='M12 5v14M5 12h14'/>",x:"<path d='M7 7l10 10M17 7L7 17'/>",
-  fit:"<path d='M3.5 12h3l2.5-6 4.5 12 2.5-6h4.5'/>",
   clock:"<circle cx='12' cy='12' r='8.5'/><path d='M12 7.5V12l3 2'/>",
   flag:"<path d='M6 21V4M6 5h11l-2 4 2 4H6'/>",
   bell:"<path d='M6 16v-5a6 6 0 0112 0v5l1.5 2h-15zM10 20.5h4'/>",
   sync:"<path d='M4.5 11a7.5 7.5 0 0113-4.2L19.5 9M19.5 4.5V9H15M19.5 13a7.5 7.5 0 01-13 4.2L4.5 15M4.5 19.5V15H9'/>",
   box:"<path d='M4.5 8.5h15V19a1.5 1.5 0 01-1.5 1.5H6A1.5 1.5 0 014.5 19zM3 4.5h18v4H3zM10 12.5h4'/>"
 };
-IC.rota=IC.week;IC.plan=IC.year;IC.sun=IC.leave;
+IC.logbook="<path d='M5 4.5h10.5A2.5 2.5 0 0118 7v13.5H7.5A2.5 2.5 0 015 18zM5 18V7M9 9h5M9 12.5h5'/>";IC.rota=IC.week;IC.plan=IC.year;IC.sun=IC.leave;
 var qwAll=false,brAll=false;
-var TABS=[["week","Week"],["month","Month"],["year","Year"],["leave","Leave"],["setup","Setup"]];
+var TABS=[["week","Week"],["month","Month"],["year","Year"],["leave","Leave"],["logbook","Logbook"],["setup","Setup"]];
 
 function chip(t,label){return "<span class='chip "+t+"'>"+label+"</span>";}
 function sl(s){return "<span class='sl'>"+s+"</span> ";}
@@ -879,7 +812,7 @@ function meter(c,lim){return "<div class='meter"+(c>lim?" over":"")+"'><i style=
 
 function render(){
   var title=TABS.filter(function(t){return t[0]===view;})[0][1],pre="";
-  var body=view==="week"?renderWeek():view==="month"?renderMonth():view==="year"?renderYear():view==="leave"?renderLeave():"";
+  var body=view==="week"?renderWeek():view==="month"?renderMonth():view==="year"?renderYear():view==="leave"?renderLeave():view==="logbook"?renderLogbook():"";
   if(view==="setup"){
     var pages=setupPages(),wide=mqWide.matches,cur=setupPage||(wide?"rota":null);
     if(cur&&!pages.some(function(p){return p.id===cur;}))cur=wide?"rota":null;
@@ -916,34 +849,28 @@ function workChips(d){
   return h;
 }
 function leftText(){var n=sessionsLeft();return n<0?"Over by "+(-n):n+" of "+S.annual;}
-function woChip(x){return "<span class='wo "+x.t+"'><span class='tg "+x.t+"'>"+WT[x.t].t+"</span><span class='tx'>"+esc(WT[x.t].n+(x.w?" · "+WHEN[x.w]:"")+(x.n?" – "+x.n:""))+"</span></span>";}
-function woCounts(by){return WTK.filter(function(x){return by[x];}).map(function(x){return "<span class='wo mini "+x+"'><span class='tg "+x+"'>"+WT[x].t+"</span>"+by[x]+"</span>";}).join("");}
 
 // ---------- Week ----------
 function dayRow(d,t){
-  var k=K(d),w=wos(k),tmpl=woTemplate(d);
+  var k=K(d);
   return "<div class='dayrow"+(dow(d)>4?" we":"")+(d.getTime()===t.getTime()?" today":"")+(d<t?" past":"")+"' data-act='day' data-k='"+k+"' role='button' tabindex='0' aria-label='"+esc(longDate(d))+"'>"+
     "<div class='date'><span class='wd'>"+DOW[dow(d)]+"</span><span class='dn'>"+d.getDate()+"</span></div>"+
-    "<div class='cols'><div class='cell'>"+workChips(d)+"</div><div class='cell fit'>"+w.map(woChip).join("")+(!w.length&&tmpl?"<span class='sugg'>"+esc(tmpl)+" slot</span>":"")+"<span class='add' aria-hidden='true'>"+svg(IC.plus,14)+"</span></div>"+
+    "<div class='cols'><div class='cell'>"+workChips(d)+"</div>"+
     (S.notes[k]?"<div class='nt'>"+esc(S.notes[k])+"</div>":"")+"</div></div>";
 }
 function renderWeek(){
   var t=today(),start=add(monday(t),weekOff*7),n=fortnight?14:7,end=add(start,n-1),rw=rotaWeek(start)+1;
   // Today and next on call
-  var tw=wos(K(t)),noc=null;for(var i=1;i<120&&!noc;i++){var dd=add(t,i);if(onCall(K(dd)))noc=dd;}
+  var noc=null;for(var i=1;i<120&&!noc;i++){var dd=add(t,i);if(onCall(K(dd)))noc=dd;}
   var gap=noc?Math.round((noc-t)/864e5):0;
-  var h=sec("","<div class='card'><div class='row stack'><span class='cap'>Today · "+fmt(t)+"</span><span class='big'>"+esc(workText(t))+(tw.length?" · "+esc(tw.map(function(x){return x.n||WT[x.t].n;}).join(", ")):"")+"</span></div>"+
+  var h=sec("","<div class='card'><div class='row stack'><span class='cap'>Today · "+fmt(t)+"</span><span class='big'>"+esc(workText(t))+"</span></div>"+
     "<div class='row stack'><span class='cap'>Next on call</span><span class='big'>"+(noc?fmt(noc)+(gap<=7?" · in "+gap+" day"+(gap===1?"":"s"):""):"None in rota")+"</span></div></div>");
   h+=navBar(fmtS(start)+" – "+fmtS(end)+" "+end.getFullYear(),"Rota "+(fortnight?"Weeks "+rw+" and "+((rw%8)+1):"Week "+rw)+(weekOff===0?" · this week":""),"wk",weekOff!==0,seg("span",[[0,"Week"],[1,"Fortnight"]],fortnight?1:0));
   for(var w=0;w<n;w+=7){
     var rows="";for(var j=0;j<7;j++)rows+=dayRow(add(start,w+j),t);
     h+=sec(fortnight?"Rota Week "+(rotaWeek(add(start,w))+1)+" <span>w/c "+fmtS(add(start,w))+"</span>":"","<div class='card'>"+rows+"</div>");
   }
-  // beneath the week: workouts, Motion, summary export
-  var st=periodStats(start,n);
-  var f="<div class='wfoot'><div><span class='cap'>Workouts planned</span><div class='n'>"+st.wo+"</div><div class='fb'>"+(st.wo?woCounts(st.by):"<span class='msg'>None yet</span>")+"</div></div>";
-  st.months.forEach(function(m){var c=motionCount(m),lim=motionLimit(m);f+="<div><span class='cap'>Motion · "+FULLMON[+m.slice(5)-1]+"</span><div class='n"+(c>lim?" over":"")+"'>"+c+" / "+lim+"</div>"+meter(c,lim)+"</div>";});
-  f+="</div><div class='copyrow'>"+seg("sumfmt",[["rich","Rich text"],["md","Markdown"],["plain","Plain"]],sumFmt)+"<button class='btn pri sm' data-act='copysum'>Copy "+(fortnight?"fortnight":"week")+" summary</button><span id='summsg' class='msg' role='status'></span></div><textarea id='sumta' class='lta' rows='14' readonly aria-label='Summary text' style='display:none;margin-top:10px'></textarea>";
+  var f="<div class='copyrow'>"+seg("sumfmt",[["rich","Rich text"],["md","Markdown"],["plain","Plain"]],sumFmt)+"<button class='btn pri sm' data-act='copysum'>Copy "+(fortnight?"fortnight":"week")+" summary</button><span id='summsg' class='msg' role='status'></span></div><textarea id='sumta' class='lta' rows='14' readonly aria-label='Summary text' style='display:none;margin-top:10px'></textarea>";
   h+=sec("","<div class='card pad'>"+f+"</div>",rotaOn()?"Theatre allocations from the CLW rota"+(rotaIndex().max?", published to "+fmt(P(rotaIndex().max)):"")+". Updated "+rotaAge()+".":"");
   var nb=computeRuns().filter(function(r){return r.end>=t;})[0];
   h+=sec("","<div class='card'>"+row("Next break",nb?fmt(nb.start)+" – "+fmt(nb.end)+" · "+nb.days+" days":"None booked","tab","leave")+row("Leave left",leftText()+" sessions","tab","leave")+"</div>");
@@ -952,24 +879,22 @@ function renderWeek(){
 
 // ---------- Month ----------
 function monthCell(d,base,t,rs){
-  var k=K(d),e=eff(d),b=blockFor(d),w=wos(k),rg=rotaGroups(k).filter(function(g){return !g.oc;});
+  var k=K(d),e=eff(d),b=blockFor(d),rg=rotaGroups(k).filter(function(g){return !g.oc;});
   var cls="mc"+(dow(d)>4?" we":"")+(base!=null&&d.getMonth()!==base?" out":"")+(d<t?" pastd":"")+(d.getTime()===t.getTime()?" today":"")+(rs[k]&&!b?" run":"")+(b&&b.kind==="booked"?" blk":"");
   var h="<div class='"+cls+"' data-act='day' data-k='"+k+"' role='button' tabindex='0' title='"+esc(fmt(d)+" – "+workText(d))+"'><div class='tp'><span class='num'>"+d.getDate()+"</span>"+(d.getDate()===1&&base==null?MON[d.getMonth()]:"")+"<span class='x'>"+(onCall(k)?"<i class='dot oc'></i>":"")+(S.notes[k]?"<i class='dot nt'></i>":"")+"</span></div>";
   if(e)h+="<div class='bars'>"+e.filter(function(x){return x!=="E";}).map(function(x){return "<i class='b-"+x+"'></i>";}).join("")+"</div>";
   if(rg.length)h+="<div class='rl'>"+esc(rg.map(function(g){return g.label;}).join(" / "))+"</div>";
   if(isBH(d))h+="<div class='tag bh'>"+esc(BH[k])+"</div>";
   else if(b)h+="<div class='tag'>"+esc(b.label)+"</div>";
-  if(w.length)h+="<div class='ws'>"+w.map(function(x){return "<div class='w1'><span class='tg "+x.t+"'>"+WT[x.t].t+"</span><span>"+esc(x.n||(x.w?WHEN[x.w]:WT[x.t].n))+"</span></div>";}).join("")+"</div>";
   return h+"</div>";
 }
 function renderMonth(){
   var t=today(),base=new Date(t.getFullYear(),t.getMonth()+monthOff,1),m=ym(base),rs=runSet();
   var last=new Date(base.getFullYear(),base.getMonth()+1,0);
   var h=navBar(FULLMON[base.getMonth()]+" "+base.getFullYear(),monthMode==="list"?"and the months after":"","mo",monthOff!==0,seg("mmode",[["grid","Month"],["list","Scroll"]],monthMode));
-  var lv=0,wo=0,by={};
-  for(var d0=new Date(base);d0<=last;d0=add(d0,1)){var e0=eff(d0);if(e0)e0.forEach(function(x,j){if(x==="L"&&j!==2)lv++;});wos(K(d0)).forEach(function(x){wo++;by[x.t]=(by[x.t]||0)+1;});}
-  var c=motionCount(m),lim=motionLimit(m);
-  h+="<div class='stats n3'>"+stat(c+" / "+lim,"Motion sessions",c>lim?"warn":"",meter(c,lim))+stat(wo,"Workouts planned","",wo?"<div class='fb' style='display:flex;gap:4px;flex-wrap:wrap;margin-top:5px'>"+woCounts(by)+"</div>":"")+stat(lv,"Leave session"+(lv===1?"":"s"))+"</div>";
+  var lv=0;
+  for(var d0=new Date(base);d0<=last;d0=add(d0,1)){var e0=eff(d0);if(e0)e0.forEach(function(x,j){if(x==="L"&&j!==2)lv++;});}
+  h+="<div class='stats n1'>"+stat(lv,"Leave session"+(lv===1?"":"s"))+"</div>";
   var head="<div class='mgrid'><div></div>"+DOW.map(function(x,i){return "<div class='mh"+(PREF[i]?" pref":"")+"'>"+x+"</div>";}).join("");
   if(monthMode==="grid"){
     h+=head;
@@ -1016,7 +941,7 @@ function renderYear(){
     h+="</div></div>";
   }
   h+="</div>"+key([[swt("background:var(--blue-tint)"),"Clinical day"],[swt("background:var(--fill)"),"Research / off"],[swt("background:var(--leave)"),"Leave"],[swt("background:linear-gradient(135deg,var(--leave) 50%,var(--blue-tint) 50%)"),"Part-day leave"],[swt("box-shadow:inset 0 0 0 1.5px var(--leave)"),"Planned, not yet in rota"],[swt("background:var(--orange-tint)"),"TOIL / other leave"],[swt("background:var(--purple-tint)"),"Bank holiday"],[swt("background:var(--indigo-tint)"),"Booked period"],[swt("outline:2px solid var(--run-line);outline-offset:-1px"),"Break"],["<i class='dot oc'></i>","On call"]]);
-  return h+"<p class='foot'>Tap any day to plan leave, add a workout or write a note.</p>";
+  return h+"<p class='foot'>Tap any day to plan leave or write a note.</p>";
 }
 
 // ---------- Leave ----------
@@ -1044,12 +969,45 @@ function renderList(){
   return sec("Leave list","<div class='card pad'>"+b+"</div>","Rich text pastes as a formatted list into Notes or Word.");
 }
 
+// ---------- Logbook (sessions from the CLW work calendar, by theatre or location) ----------
+var lbFrom=null,lbTo=null;
+var LB=[
+  ["Theatres",[/^theatre/i,/^casic/i,/flexible/i]],
+  ["Obstetrics",[/^obstet(?!.*elective)/i,/elective/i]],
+  ["Clinics",[/cpet/i,/hrac(?!.*note)/i,/note/i,/pre.?assess/i,/clinic/i]],
+  ["Out of Department",[/hdr/i,/stokes/i,/interventional|radiolog/i,/endoscop/i]]
+];
+function lbPlace(l){
+  for(var g=0;g<LB.length;g++)for(var q=0;q<LB[g][1].length;q++)if(LB[g][1][q].test(l))return {g:g,p:q};
+  return {g:LB.length,p:0};
+}
+function renderLogbook(){
+  if(!rotaOn())return sec("","<div class='card'><div class='row'><span class='l'>Rota not connected<span class='cap'>The logbook is built from your CLW work calendar. Set it up under Setup \u2192 Rota (CLW).</span></span></div></div>");
+  var from=lbFrom||K(yearBounds().start),to=lbTo||K(today());
+  var names=LB.map(function(x){return x[0];}).concat(["Other","On call"]);
+  var G={},tot=0,locs={},days={};
+  (R.work||[]).forEach(function(e){
+    if(e.d<from||e.d>to||/available/i.test(e.l||""))return;
+    var pl=isOC(e)?{g:LB.length+1,p:0}:lbPlace(e.l||""),lab=e.l||"Unlabelled";
+    var gr=G[pl.g]=G[pl.g]||{n:0,it:{}};
+    var it=gr.it[lab]=gr.it[lab]||{l:lab,p:pl.p,n:0};
+    it.n++;gr.n++;tot++;locs[lab]=1;days[e.d]=1;
+  });
+  var h=sec("","<div class='card'>"+frow("From","<input type='date' id='in-lbf' data-in='lbf' value='"+from+"'>")+frow("To","<input type='date' id='in-lbt' data-in='lbt' value='"+to+"'>")+"</div>","Defaults to the start of the leave year up to today.");
+  h+="<div class='stats n3'>"+stat(tot,"Sessions")+stat(Object.keys(locs).length,"Locations")+stat(Object.keys(days).length,"Days")+"</div>";
+  if(!tot)return h+sec("","<div class='card'><div class='row'><span class='l'>No sessions in this period</span></div></div>");
+  Object.keys(G).map(Number).sort(function(a,b){return a-b;}).forEach(function(gk){
+    var gr=G[gk],its=Object.keys(gr.it).map(function(k){return gr.it[k];}).sort(function(a,b){return a.p-b.p||a.l.localeCompare(b.l,undefined,{numeric:true});});
+    h+=sec(esc(names[gk])+" \u00b7 "+gr.n,"<div class='card'>"+its.map(function(x){return row(esc(x.l),"<b>"+x.n+"</b>");}).join("")+"</div>");
+  });
+  return h+"<p class='foot'>Counted from your CLW work calendar. Available Consultants isn't counted.</p>";
+}
+
 // ---------- Setup ----------
 function setupPages(){
   var m=ym(today()),oc=Object.keys(S.onCall).length;
   var p=[
     {id:"rota",name:"Rota (CLW)",ic:"rota",col:"blue",val:rotaOn()?"Updated "+rotaAge():"Not connected"},
-    {id:"fitness",name:"Fitness",ic:"fit",col:"purple",val:motionLimit(m)+" Motion / month"},
     {id:"plan",name:"Job plan",ic:"plan",col:"indigo",val:"8-week cycle"},
     {id:"year",name:"Leave year",ic:"sun",col:"orange",val:sessionsLeft()<0?leftText():leftText()+" left"},
     {id:"pa",name:"Programmed activities",ic:"clock",col:"teal",val:(paSum("sched")+paSum("oncall")+paSum("spa")+paSum("apa")).toFixed(2)+" PA"},
@@ -1065,7 +1023,7 @@ function renderSetup(pages,cur,wide){
     return "<button class='row"+(wide&&cur===p.id?" cur":"")+"' data-act='setup' data-v='"+p.id+"'><span class='ico' style='background:var(--"+p.col+")'>"+svg(IC[p.ic],18)+"</span><span class='l'>"+p.name+"</span><span class='v'>"+esc(p.val)+"</span><span class='chev'>"+svg(IC.chevR,14)+"</span></button>";
   }).join("")+"</div></div>";
   if(!cur)return "<div class='setup'>"+list+"</div>";
-  var fn={rota:setupRota,fitness:setupFitness,plan:setupPlan,year:setupYear,pa:setupPA,periods:setupPeriods,oncall:setupOnCall,sync:setupSync,backup:setupBackup}[cur];
+  var fn={rota:setupRota,plan:setupPlan,year:setupYear,pa:setupPA,periods:setupPeriods,oncall:setupOnCall,sync:setupSync,backup:setupBackup}[cur];
   var name=pages.filter(function(p){return p.id===cur;})[0].name;
   return "<div class='setup'>"+(wide?list:"")+"<div class='sdetail'><h2>"+name+"</h2>"+fn()+"</div></div>";
 }
@@ -1076,17 +1034,6 @@ function setupRota(){
   return sec("","<div class='card'>"+row("Last updated","<b>"+rotaAge()+"</b>")+row("Sessions in the rota","<b>"+(R.work||[]).length+"</b>")+row("Published up to","<b>"+(ri.max?fmt(P(ri.max))+" "+P(ri.max).getFullYear():"–")+"</b>")+row("Leave entries","<b>"+ri.l.length+"</b>")+"</div>"+
     (lsMode&&gh.gist?"<div class='card'><button class='row center' data-act='gnow'>Check for updates now</button></div>":""),
     "Allocations, on-calls and leave come from your CLW calendars five times a day. Leave in the rota counts as booked. Leave you add here shows as planned until it appears in the rota. To force a refresh, run “Sync rota from CLW” in the repo's Actions tab on GitHub, then check for updates here.");
-}
-function setupFitness(){
-  var m=ym(today()),g="<div class='tscroll'><div class='pat w7'><div></div>"+DOW.map(function(x){return "<div class='ph'>"+x+"</div>";}).join("");
-  for(var w=0;w<4;w++){
-    g+="<div class='pw'>"+(w+1)+" / "+(w+5)+"</div>";
-    for(var d=0;d<7;d++){var k=w+"-"+d,val=(S.woTemplate&&S.woTemplate[k]!=null)?S.woTemplate[k]:DEFAULT_WO[w][d];
-      g+="<div class='pc'><input type='text' id='in-wot-"+k+"' data-in='wot' data-k='"+k+"' value='"+esc(val)+"' placeholder='–' aria-label='Week "+(w+1)+" "+DOW[d]+"'></div>";}
-  }
-  return sec("Motion membership","<div class='card'>"+frow("Sessions per month",num("motion",motionLimit(m),"min='0' max='60' step='1'"))+"</div>","The count starts again on the 1st. A change applies from this month onwards and leaves earlier months as they were.")+
-    sec("David Lloyd","<div class='card'>"+frow("Last day of membership","<input type='date' id='in-dlend' data-in='dlend' value='"+esc(S.dlEnd||"")+"'>")+"</div>","After this date, David Lloyd is no longer offered when you add a workout. Sessions already planned stay as they are. Clear the date to keep it available.")+
-    sec("Suggested workout slots","<div class='card pad'>"+g+"</div></div></div>","Shown as a dashed slot in the Week view on days with nothing planned. Rows are rota weeks. Clear a box to remove a suggestion.");
 }
 function setupPlan(){
   var g="<div class='tscroll'><div class='pat'><div></div>"+DOW.slice(0,5).map(function(x){return "<div class='ph'>"+x+"</div>";}).join("");
@@ -1145,7 +1092,7 @@ function setupSync(){
   return sec("","<div class='card'>"+frow("Token","<input type='password' id='gtok' placeholder='ghp_…' autocomplete='off' autocapitalize='off' autocorrect='off' spellcheck='false' style='flex:1.6;min-width:0'>")+frow("Gist ID","<input type='text' id='ggist' placeholder='Optional: found automatically' autocomplete='off' autocapitalize='off' autocorrect='off' spellcheck='false' style='flex:1.6;min-width:0'>")+"</div><div class='card'><button class='row center' data-act='gon'>Turn on sync</button></div><p class='foot' id='gmsg' role='status'></p>","Keeps your laptop, iPad and phone in step. You need a GitHub token (classic) with only the gist permission. It is stored on this device and sent only to GitHub.");
 }
 function setupBackup(){
-  return sec("Backup","<div class='card pad'><div class='copyrow' style='margin-bottom:10px'><button class='btn sm' data-act='bkcopy'>Copy backup code</button><span id='bkmsg' class='msg' role='status'></span></div><textarea id='bkin' class='lta' rows='3' placeholder='Paste a backup code here' aria-label='Backup code'></textarea><div style='margin-top:10px'><button class='btn sm' data-act='bkrestore'>Restore from code</button></div></div>","Copies everything: job plan, planned leave, workouts and notes.")+
+  return sec("Backup","<div class='card pad'><div class='copyrow' style='margin-bottom:10px'><button class='btn sm' data-act='bkcopy'>Copy backup code</button><span id='bkmsg' class='msg' role='status'></span></div><textarea id='bkin' class='lta' rows='3' placeholder='Paste a backup code here' aria-label='Backup code'></textarea><div style='margin-top:10px'><button class='btn sm' data-act='bkrestore'>Restore from code</button></div></div>","Copies everything: job plan, planned leave and notes.")+
     sec("Reset","<div class='card'><button class='row center dan' data-act='clearleave'>Clear all planned leave</button></div>","Removes leave you added in the planner. Leave in the rota isn't affected.");
 }
 
@@ -1161,7 +1108,7 @@ function closeDay(){
   if(art&&dirty&&canSave){clearTimeout(saveTimer);saveTimer=setTimeout(save,800);}
 }
 function renderDlg(){
-  var k=dlgDate,d=P(k),s=sessionsFor(d),e=eff(d),b=blockFor(d),w=wos(k),m=ym(d),rgs=rotaGroups(k),sc=dlg.querySelector(".sb"),top=sc?sc.scrollTop:0;
+  var k=dlgDate,d=P(k),s=sessionsFor(d),e=eff(d),b=blockFor(d),rgs=rotaGroups(k),sc=dlg.querySelector(".sb"),top=sc?sc.scrollTop:0;
   var h="<div class='grab'></div><div class='sh'><button class='btn ic plain' data-act='dnav' data-d='-1' aria-label='Previous day'>"+svg(IC.chevL,20)+"</button><div class='st'><b>"+FULLDOW[dow(d)]+" "+d.getDate()+" "+FULLMON[d.getMonth()]+"</b><small>Rota Week "+(rotaWeek(d)+1)+" · "+d.getFullYear()+(isBH(d)?" · "+esc(BH[k]):"")+(b?" · "+esc(b.label):"")+"</small></div><button class='btn ic plain' data-act='dnav' data-d='1' aria-label='Next day'>"+svg(IC.chevR,20)+"</button><button class='done' data-act='dclose'>Done</button></div><div class='sb'>";
   // work
   var wk="";
@@ -1182,16 +1129,6 @@ function renderDlg(){
   }
   if(!rotaWork(k).some(isOC))wk+=frow("On call","<input type='checkbox' class='sw' id='in-doc' data-in='doc' "+(S.onCall[k]?"checked":"")+">");
   h+=sec("Work"+(rgs.length?" <span>From the CLW rota</span>":""),"<div class='card'>"+wk+"</div>");
-  // fitness
-  var mc=motionCount(m),ml=motionLimit(m),ft="",tm=woTemplate(d);
-  w.forEach(function(x,i){
-    ft+="<div class='card wcard'><span class='tg "+x.t+"'>"+WT[x.t].t+"</span><select id='in-wt-"+i+"' data-in='wt' data-i='"+i+"' aria-label='Type'>"+wtkOn(k,x.t).map(function(t){return "<option value='"+t+"'"+(x.t===t?" selected":"")+">"+WT[t].long+"</option>";}).join("")+"</select>"+
-      "<button class='rm' data-act='wrm' data-i='"+i+"' aria-label='Remove workout'>"+svg(IC.x,18)+"</button>"+
-      "<div class='w2'><select id='in-ww-"+i+"' data-in='ww' data-i='"+i+"' aria-label='When'>"+WHENK.map(function(t){return "<option value='"+t+"'"+(x.w===t?" selected":"")+">"+WHEN[t]+"</option>";}).join("")+"</select>"+
-      "<input type='text' id='in-wn-"+i+"' data-in='wn' data-i='"+i+"' value='"+esc(x.n||"")+"' placeholder='Details' aria-label='Details'></div></div>";
-  });
-  ft+="<div class='addrow'>"+wtkOn(k).map(function(t){return "<button data-act='wadd' data-t='"+t+"'><span class='tg "+t+"'>"+WT[t].t+"</span>"+WT[t].n+"</button>";}).join("")+"</div>";
-  h+=sec("Fitness <span"+(mc>ml?" class='over'":"")+">Motion "+mc+" / "+ml+" in "+FULLMON[d.getMonth()]+"</span>",ft,!w.length&&tm?"Suggested slot: "+esc(tm)+".":"");
   h+=sec("Note","<div class='card'><textarea id='in-dnote' data-in='dnote' rows='2' placeholder='Anything else for the day, such as school run or a late finish' style='background:none;border-radius:0;padding:12px 16px;display:block'>"+esc(S.notes[k]||"")+"</textarea></div>");
   dlg.innerHTML=h+"</div>";
   dlg.setAttribute("aria-label",longDate(d));
@@ -1260,8 +1197,6 @@ document.addEventListener("click",function(ev){
     case "lv":{var dd=P(dlgDate),key=lk(dd,+el.dataset.i);saveNote();if(S.leave[key])delete S.leave[key];else S.leave[key]=1;changed(true);renderDlg();break;}
     case "lvall":{var d2=P(dlgDate),s2=sessionsFor(d2),cl=s2.map(function(t,i){return t==="C"&&i!==2&&!rotaLeaveFor(d2,i)?i:-1;}).filter(function(i){return i>=0;}),on=cl.every(function(i){return isPlanned(d2,i);});
       saveNote();cl.forEach(function(i){if(on)delete S.leave[lk(d2,i)];else S.leave[lk(d2,i)]=1;});changed(true);renderDlg();break;}
-    case "wadd":saveNote();(S.workouts[dlgDate]=S.workouts[dlgDate]||[]).push({t:el.dataset.t,w:"",n:""});changed(true);renderDlg();break;
-    case "wrm":saveNote();wos(dlgDate).splice(+el.dataset.i,1);if(!wos(dlgDate).length)delete S.workouts[dlgDate];changed(true);renderDlg();break;
   }
 });
 document.addEventListener("change",function(ev){
@@ -1269,9 +1204,8 @@ document.addEventListener("change",function(ev){
   switch(a){
     case "lf":listFrom=el.value||null;render();break;
     case "lt":listTo=el.value||null;render();break;
-    case "motion":{var m=ym(today()),n=Math.max(0,parseInt(el.value,10)||0);S.motionPlans=S.motionPlans.filter(function(p){return p.from!==m;});S.motionPlans.push({from:m,n:n});changed();break;}
-    case "dlend":S.dlEnd=el.value||"";changed(true);break;
-    case "wot":if(!S.woTemplate)S.woTemplate={};S.woTemplate[el.dataset.k]=el.value.trim();changed(true);break;
+    case "lbf":lbFrom=el.value||null;render();break;
+    case "lbt":lbTo=el.value||null;render();break;
     case "mirror":editMirror=el.checked;break;
     case "annual":S.annual=Math.max(0,parseInt(el.value,10)||0);changed();break;
     case "ystart":if(el.value){S.yearStart=el.value.slice(5);changed();}break;
@@ -1282,9 +1216,6 @@ document.addEventListener("change",function(ev){
     case "paitem":S.pa.items[+el.dataset.i].pa=parseFloat(el.value)||0;changed();break;
     case "bl":{var b=S.blocks.filter(function(x){return x.id===el.dataset.id;})[0];if(b){b[el.dataset.f]=el.value;changed(true);}break;}
     case "doc":if(el.checked)S.onCall[dlgDate]=1;else delete S.onCall[dlgDate];changed(true);break;
-    case "wt":saveNote();wos(dlgDate)[+el.dataset.i].t=el.value;changed(true);renderDlg();break;
-    case "ww":wos(dlgDate)[+el.dataset.i].w=el.value;changed(true);break;
-    case "wn":wos(dlgDate)[+el.dataset.i].n=el.value.trim();changed(true);break;
     case "dnote":saveNote();break;
   }
 });

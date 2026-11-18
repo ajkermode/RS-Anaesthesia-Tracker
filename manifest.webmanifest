@@ -1,6 +1,6 @@
 {
-  "name": "Planner",
-  "short_name": "Planner",
+  "name": "RS Anaesthesia Tracker",
+  "short_name": "RS Tracker",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
