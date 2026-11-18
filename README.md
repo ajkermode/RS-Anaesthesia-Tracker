@@ -14,7 +14,7 @@ Repository secrets needed (Settings → Secrets and variables → Actions): `CLW
 
 ## Logbook
 
-The Logbook tab has DCC and SPA toggles. DCC counts sessions from the CLW work calendar by theatre or location, as collapsible groups with sessions and PAs (1 session = 1.25 PA). SPA lists Professional and Study Leave from the CLW leave calendar and lets you record CPD, teaching, audit and research activities, which are saved and synced with your other data.
+The Logbook tab has DCC and SPA toggles. DCC counts sessions from the CLW work calendar by theatre or location, as collapsible groups with sessions and PAs (1 session = 1.25 PA). SPA lists Professional and Study Leave from the CLW leave calendar and lets you record CPD, teaching, audit and research activities, which are saved and synced with your other data. A Logbook Report button prints the DCC report, the SPA report or both for the displayed date range.
 
 ## Structure
 

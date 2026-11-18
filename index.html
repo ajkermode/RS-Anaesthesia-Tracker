@@ -123,6 +123,7 @@ button.row:active,.dayrow:active{background:var(--press)}
 .lbh .chev svg{transition:transform .15s}.lbh.open .chev svg{transform:rotate(90deg)}
 .row.sub{padding-left:32px;min-height:42px}.row.sub2{padding-left:48px;min-height:36px;font-size:14px;color:var(--ink2)}
 .row.sub2 .rm{flex:none;border:0;background:none;color:var(--ink3);padding:4px;border-radius:50%}
+.lbtop{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 14px}.lbask{margin:0 0 16px}
 .lbh .cap{display:block;font-size:12px;color:var(--ink2)}
 .seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px}
 .seg button{border:0;background:none;height:28px;padding:0 12px;border-radius:7px;font-size:13px;font-weight:500;color:var(--ink)}
@@ -975,7 +976,7 @@ function renderList(){
 }
 
 // ---------- Logbook (DCC from the CLW work calendar, by theatre or location) ----------
-var lbFrom=null,lbTo=null,lbDom="dcc",lbOpen={},lbForm={c:"cpd",d:"",t:"",h:"",n:""};
+var lbFrom=null,lbTo=null,lbDom="dcc",lbOpen={},lbRepAsk=false,lbForm={c:"cpd",d:"",t:"",h:"",n:""};
 var SPA_CATS=[["cpd","CPD"],["teaching","Teaching"],["audit","Audit"],["research","Research"]];
 var LB=[
   ["Theatres",[/^theatre/i,/^casic/i,/flexible/i]],
@@ -994,21 +995,19 @@ function paText(n){return (Math.round(n*PA_PER*100)/100)+" PA";}
 function lbHead(key,title,sub,right,open,cls){
   return "<button class='row lbh"+(open?" open":"")+(cls?" "+cls:"")+"' data-act='lbx' data-v='"+key+"' aria-expanded='"+(open?"true":"false")+"'><span class='l'>"+title+"<span class='cap'>"+sub+"</span></span><span class='v'><b>"+right+"</b></span><span class='chev'>"+svg(IC.chevR,14)+"</span></button>";
 }
-function lbFilter(from,to,foot){
-  return sec("","<div class='card'>"+frow("From","<input type='date' id='in-lbf' data-in='lbf' value='"+from+"'>")+frow("To","<input type='date' id='in-lbt' data-in='lbt' value='"+to+"'>")+"</div>",foot);
-}
+function lbRange(){return {from:lbFrom||K(yearBounds().start),to:lbTo||K(today())};}
 function renderLogbook(){
-  var h="<div style='margin:0 0 14px'>"+seg("lbdom",[["dcc","DCC"],["spa","SPA"]],lbDom)+"</div>";
-  var from=lbFrom||K(yearBounds().start),to=lbTo||K(today());
+  var rg=lbRange(),from=rg.from,to=rg.to;
+  var h="<div class='lbtop'>"+seg("lbdom",[["dcc","DCC"],["spa","SPA"]],lbDom)+"<button class='btn sm' data-act='lbrep'>Logbook Report</button></div>";
+  if(lbRepAsk)h+="<div class='card pad lbask'><div class='cap' style='margin-bottom:8px'>Print report for "+esc(fmt(P(from)))+" \u2013 "+esc(fmt(P(to)))+"</div><div class='copyrow'><button class='btn pri sm' data-act='lbprint' data-v='dcc'>DCC Report</button><button class='btn pri sm' data-act='lbprint' data-v='spa'>SPA Report</button><button class='btn pri sm' data-act='lbprint' data-v='both'>Both</button><button class='btn sm' data-act='lbrep'>Cancel</button></div></div>";
   return h+(lbDom==="spa"?renderSPA(from,to):renderDCC(from,to));
 }
-function renderDCC(from,to){
-  var h="";
-  if(!rotaOn())return h+sec("Direct Clinical Care","<div class='card'><div class='row'><span class='l'>Rota not connected<span class='cap'>DCC is built from your CLW work calendar. Set it up under Setup \u2192 Rota (CLW).</span></span></div></div>");
+// ---- data ----
+function dccData(from,to){
   var names=LB.map(function(x){return x[0];}).concat(["Other","On call"]);
   var G={},tot=0,days={},canon={};
   LB_FIXED.forEach(function(n){canon[n.toLowerCase()]=n;});
-  (R.work||[]).forEach(function(e){
+  ((R&&R.work)||[]).forEach(function(e){
     if(e.d<from||e.d>to||/available/i.test(e.l||"")||/^\s*out of department\s*$/i.test(e.l||""))return;
     var oc=isOC(e),raw=e.l||"Unlabelled",lab=canon[raw.toLowerCase()]||raw;
     var pl=oc?{g:LB.length+1,p:0}:lbPlace(lab);
@@ -1018,23 +1017,30 @@ function renderDCC(from,to){
   });
   var tg=G[0]=G[0]||{n:0,it:{}};
   LB_FIXED.forEach(function(n){if(!tg.it[n])tg.it[n]={l:n,p:/^casic/i.test(n)?1:0,n:0,ev:[]};});
-  h+="<div class='stats n3'>"+stat(tot,"Sessions")+stat(Math.round(tot*PA_PER*100)/100,"PAs")+stat(Object.keys(days).length,"Days")+"</div>";
-  h+=lbFilter(from,to,"Defaults to the start of the leave year up to today. 1 session = 1.25 PA.");
-  Object.keys(G).map(Number).sort(function(a,b){return a-b;}).forEach(function(gk){
-    var gr=G[gk],oc=gk===LB.length+1,gkey="g"+gk,open=!!lbOpen[gkey];
-    var its=Object.keys(gr.it).map(function(k){return gr.it[k];}).sort(function(a,b){return a.p-b.p||a.l.localeCompare(b.l,undefined,{numeric:true});});
-    var body=lbHead(gkey,esc(names[gk]),gr.n+(oc?" on-call"+(gr.n===1?"":"s"):" session"+(gr.n===1?"":"s")),oc?"":paText(gr.n),open);
-    if(open)its.forEach(function(x,ix){
-      var ikey="i"+gk+"-"+ix,iopen=!!lbOpen[ikey]&&x.n>0;
-      body+="<div class='lbi'>"+(x.n?lbHead(ikey,esc(x.l),x.n+" session"+(x.n===1?"":"s"),oc?"":paText(x.n),iopen,"sub"):"<div class='row sub'><span class='l'>"+esc(x.l)+"<span class='cap'>0 sessions</span></span><span class='v'>"+(oc?"":"0 PA")+"</span></div>");
-      if(iopen)x.ev.slice().sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:0;}).forEach(function(e){
-        var si=SI[e.s];body+="<div class='row sub2'><span class='l'>"+esc(fmt(P(e.d)))+"</span><span class='v'>"+(si!=null?SN[si]:"")+"</span></div>";
-      });
-      body+="</div>";
-    });
-    h+=sec("","<div class='card'>"+body+"</div>");
+  var groups=Object.keys(G).map(Number).sort(function(a,b){return a-b;}).map(function(gk){
+    var gr=G[gk],its=Object.keys(gr.it).map(function(k){return gr.it[k];}).sort(function(a,b){return a.p-b.p||a.l.localeCompare(b.l,undefined,{numeric:true});});
+    its.forEach(function(x){x.ev.sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:0;});});
+    return {gk:gk,name:names[gk],oc:gk===LB.length+1,n:gr.n,items:its};
   });
-  return h+"<p class='foot'>Counted from your CLW work calendar. Available Consultants and the CLW \"Out of Department\" entry aren't counted, and on-calls aren't included in the session or PA totals.</p>";
+  return {groups:groups,tot:tot,days:Object.keys(days).length};
+}
+function spaData(from,to){
+  var kinds=[["pl","Professional Leave",/professional/i],["sl","Study Leave",/study/i]],L=(R&&R.leave)||[],lv=0;
+  var ks=kinds.map(function(k){
+    var ev=L.filter(function(x){return k[2].test(x.t||"")&&x.from<=to&&x.to>=from;}).sort(function(a,b){return a.from<b.from?-1:a.from>b.from?1:0;});
+    lv+=ev.length;return {k:k[0],name:k[1],ev:ev};
+  });
+  var log=(S.spaLog||[]).filter(function(x){return x.d>=from&&x.d<=to;}),hrs=0;
+  log.forEach(function(x){hrs+=+x.h||0;});
+  var cats=SPA_CATS.map(function(c){
+    var en=log.filter(function(x){return x.c===c[0];}).sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0;}),ch=0;
+    en.forEach(function(x){ch+=+x.h||0;});
+    return {c:c[0],name:c[1],en:en,h:Math.round(ch*100)/100};
+  });
+  return {kinds:ks,lv:lv,log:log,hrs:Math.round(hrs*100)/100,cats:cats};
+}
+function lbFilter(from,to,foot){
+  return sec("","<div class='card'>"+frow("From","<input type='date' id='in-lbf' data-in='lbf' value='"+from+"'>")+frow("To","<input type='date' id='in-lbt' data-in='lbt' value='"+to+"'>")+"</div>",foot);
 }
 function lbDates(x){
   var f=P(x.from),t=P(x.to);
@@ -1042,29 +1048,38 @@ function lbDates(x){
   var half=x.from===x.to&&timed?" \u00b7 "+x.st+"\u2013"+x.en:"";
   return x.from===x.to?fmt(f)+half:fmt(f)+" \u2013 "+fmt(t);
 }
-function renderSPA(from,to){
-  var h="",hrs=0;
-  var kinds=[["pl","Professional Leave",/professional/i],["sl","Study Leave",/study/i]];
-  var L=(R&&R.leave)||[],lv=0,KL=kinds.map(function(k){
-    var ev=L.filter(function(x){return k[2].test(x.t||"")&&x.from<=to&&x.to>=from;}).sort(function(a,b){return a.from<b.from?-1:a.from>b.from?1:0;});
-    lv+=ev.length;return ev;
+function slotOf(e){var si=SI[e.s];return si!=null?SN[si]:"";}
+// ---- page ----
+function renderDCC(from,to){
+  if(!rotaOn())return sec("Direct Clinical Care","<div class='card'><div class='row'><span class='l'>Rota not connected<span class='cap'>DCC is built from your CLW work calendar. Set it up under Setup \u2192 Rota (CLW).</span></span></div></div>");
+  var D=dccData(from,to),h="<div class='stats n3'>"+stat(D.tot,"Sessions")+stat(Math.round(D.tot*PA_PER*100)/100,"PAs")+stat(D.days,"Days")+"</div>";
+  h+=lbFilter(from,to,"Defaults to the start of the leave year up to today. 1 session = 1.25 PA.");
+  D.groups.forEach(function(g){
+    var gkey="g"+g.gk,open=!!lbOpen[gkey];
+    var body=lbHead(gkey,esc(g.name),g.n+(g.oc?" on-call"+(g.n===1?"":"s"):" session"+(g.n===1?"":"s")),g.oc?"":paText(g.n),open);
+    if(open)g.items.forEach(function(x,ix){
+      var ikey="i"+g.gk+"-"+ix,iopen=!!lbOpen[ikey]&&x.n>0;
+      body+="<div class='lbi'>"+(x.n?lbHead(ikey,esc(x.l),x.n+" session"+(x.n===1?"":"s"),g.oc?"":paText(x.n),iopen,"sub"):"<div class='row sub'><span class='l'>"+esc(x.l)+"<span class='cap'>0 sessions</span></span><span class='v'>"+(g.oc?"":"0 PA")+"</span></div>");
+      if(iopen)x.ev.forEach(function(e){body+="<div class='row sub2'><span class='l'>"+esc(fmt(P(e.d)))+"</span><span class='v'>"+slotOf(e)+"</span></div>";});
+      body+="</div>";
+    });
+    h+=sec("","<div class='card'>"+body+"</div>");
   });
-  var log=(S.spaLog||[]).filter(function(x){return x.d>=from&&x.d<=to;});
-  log.forEach(function(x){hrs+=+x.h||0;});
-  h+="<div class='stats n3'>"+stat(lv,"Leave events")+stat(log.length,"Activities")+stat(Math.round(hrs*100)/100,"Hours logged")+"</div>";
+  return h+"<p class='foot'>Counted from your CLW work calendar. Available Consultants and the CLW \"Out of Department\" entry aren't counted, and on-calls aren't included in the session or PA totals.</p>";
+}
+function renderSPA(from,to){
+  var D=spaData(from,to),h="<div class='stats n3'>"+stat(D.lv,"Leave events")+stat(D.log.length,"Activities")+stat(D.hrs,"Hours logged")+"</div>";
   h+=lbFilter(from,to,"Defaults to the start of the leave year up to today.");
-  // CLW leave
   var body="";
-  kinds.forEach(function(k,i){
-    var ev=KL[i],open=!!lbOpen["s-"+k[0]];
-    body+=lbHead("s-"+k[0],k[1],ev.length+" event"+(ev.length===1?"":"s"),"",open);
+  D.kinds.forEach(function(k){
+    var open=!!lbOpen["s-"+k.k];
+    body+=lbHead("s-"+k.k,k.name,k.ev.length+" event"+(k.ev.length===1?"":"s"),"",open);
     if(open){
-      if(!ev.length)body+="<div class='row sub'><span class='l'><span class='cap'>None in this period</span></span></div>";
-      ev.forEach(function(x){body+="<div class='row sub2'><span class='l'>"+esc(x.t||k[1])+"</span><span class='v'>"+esc(lbDates(x))+"</span></div>";});
+      if(!k.ev.length)body+="<div class='row sub'><span class='l'><span class='cap'>None in this period</span></span></div>";
+      k.ev.forEach(function(x){body+="<div class='row sub2'><span class='l'>"+esc(x.t||k.name)+"</span><span class='v'>"+esc(lbDates(x))+"</span></div>";});
     }
   });
   h+=sec("From the CLW leave calendar","<div class='card'>"+body+"</div>",rotaOn()?"Professional and Study Leave events in the CLW leave calendar.":"Rota not connected. Set it up under Setup \u2192 Rota (CLW).");
-  // submissions
   var cat=lbForm.c||"cpd",f=lbForm;if(!f.d)f.d=K(today());
   var form="<div class='card'>"+frow("Category","<select id='in-spac' data-in='spaf' data-f='c'>"+SPA_CATS.map(function(c){return "<option value='"+c[0]+"'"+(c[0]===cat?" selected":"")+">"+c[1]+"</option>";}).join("")+"</select>")+
     frow("Date","<input type='date' id='in-spad' data-in='spaf' data-f='d' value='"+esc(f.d)+"'>")+
@@ -1074,21 +1089,64 @@ function renderSPA(from,to){
     "<button class='row center' data-act='spaadd'>Add activity</button></div>";
   h+=sec("Record an activity",form,"Saved with your other data and synced between devices.");
   var cb="";
-  SPA_CATS.forEach(function(c){
-    var en=log.filter(function(x){return x.c===c[0];}).sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0;}),ch=0;
-    en.forEach(function(x){ch+=+x.h||0;});
-    var open=!!lbOpen["a-"+c[0]];
-    cb+=lbHead("a-"+c[0],c[1],en.length+" entr"+(en.length===1?"y":"ies"),ch?(Math.round(ch*100)/100)+" h":"",open);
+  D.cats.forEach(function(c){
+    var open=!!lbOpen["a-"+c.c];
+    cb+=lbHead("a-"+c.c,c.name,c.en.length+" entr"+(c.en.length===1?"y":"ies"),c.h?c.h+" h":"",open);
     if(open){
-      if(!en.length)cb+="<div class='row sub'><span class='l'><span class='cap'>Nothing recorded in this period</span></span></div>";
-      en.forEach(function(x){
+      if(!c.en.length)cb+="<div class='row sub'><span class='l'><span class='cap'>Nothing recorded in this period</span></span></div>";
+      c.en.forEach(function(x){
         var cap=[x.h?(+x.h)+" h":"",x.n||""].filter(Boolean).map(esc).join(" \u00b7 ");
         cb+="<div class='row sub2'><span class='l'>"+esc(x.t)+(cap?"<span class='cap'>"+cap+"</span>":"")+"</span><span class='v'>"+esc(fmt(P(x.d)))+"</span><button class='rm' data-act='spadel' data-v='"+esc(x.id)+"' aria-label='Delete entry'>"+svg(IC.x,16)+"</button></div>";
       });
     }
   });
-  h+=sec("Your activities","<div class='card'>"+cb+"</div>");
+  return h+sec("Your activities","<div class='card'>"+cb+"</div>");
+}
+// ---- printable report ----
+function repDCC(from,to){
+  var h="<h2>Direct Clinical Care (DCC)</h2>";
+  if(!rotaOn())return h+"<p class='n'>Rota not connected, so no DCC data is available.</p>";
+  var D=dccData(from,to);
+  h+="<table class='sum'><tr><td><b>"+D.tot+"</b><br>Sessions</td><td><b>"+(Math.round(D.tot*PA_PER*100)/100)+"</b><br>PAs</td><td><b>"+D.days+"</b><br>Days</td></tr></table>";
+  D.groups.forEach(function(g){
+    h+="<h3>"+esc(g.name)+" <span>"+g.n+(g.oc?" on-call"+(g.n===1?"":"s"):" session"+(g.n===1?"":"s")+" \u00b7 "+paText(g.n))+"</span></h3><table><tr><th>"+(g.oc?"Entry":"Location")+"</th><th class='r'>Sessions</th><th class='r'>PA</th><th>Dates</th></tr>";
+    g.items.forEach(function(x){
+      h+="<tr><td>"+esc(x.l)+"</td><td class='r'>"+x.n+"</td><td class='r'>"+(g.oc?"\u2013":Math.round(x.n*PA_PER*100)/100)+"</td><td class='d'>"+x.ev.map(function(e){return esc(fmt(P(e.d))+(slotOf(e)?" "+slotOf(e):""));}).join(", ")+"</td></tr>";
+    });
+    h+="</table>";
+  });
+  return h+"<p class='n'>Counted from the CLW work calendar. 1 session = 1.25 PA. Available Consultants and the CLW \"Out of Department\" entry aren't counted; on-calls aren't included in the session or PA totals.</p>";
+}
+function repSPA(from,to){
+  var D=spaData(from,to),h="<h2>Supporting Professional Activity (SPA)</h2>";
+  h+="<table class='sum'><tr><td><b>"+D.lv+"</b><br>Leave events</td><td><b>"+D.log.length+"</b><br>Activities</td><td><b>"+D.hrs+"</b><br>Hours logged</td></tr></table>";
+  h+="<h3>From the CLW leave calendar</h3>";
+  D.kinds.forEach(function(k){
+    h+="<h4>"+esc(k.name)+" <span>"+k.ev.length+" event"+(k.ev.length===1?"":"s")+"</span></h4>";
+    h+=k.ev.length?"<table><tr><th>Event</th><th>Date</th></tr>"+k.ev.map(function(x){return "<tr><td>"+esc(x.t||k.name)+"</td><td>"+esc(lbDates(x))+"</td></tr>";}).join("")+"</table>":"<p class='n'>None in this period.</p>";
+  });
+  h+="<h3>Recorded activities</h3>";
+  D.cats.forEach(function(c){
+    h+="<h4>"+esc(c.name)+" <span>"+c.en.length+" entr"+(c.en.length===1?"y":"ies")+(c.h?" \u00b7 "+c.h+" h":"")+"</span></h4>";
+    h+=c.en.length?"<table><tr><th>Title</th><th>Date</th><th class='r'>Hours</th><th>Notes</th></tr>"+c.en.map(function(x){return "<tr><td>"+esc(x.t)+"</td><td>"+esc(fmt(P(x.d)))+"</td><td class='r'>"+(x.h?+x.h:"")+"</td><td>"+esc(x.n||"")+"</td></tr>";}).join("")+"</table>":"<p class='n'>Nothing recorded in this period.</p>";
+  });
   return h;
+}
+var REP_CSS="body{font:12px/1.4 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#111;margin:18mm 14mm}h1{font-size:20px;margin:0 0 2px}.m{color:#555;margin:0 0 14px}h2{font-size:16px;margin:20px 0 8px;padding-bottom:3px;border-bottom:2px solid #111}h3{font-size:13px;margin:16px 0 6px}h4{font-size:12px;margin:12px 0 4px}h3 span,h4 span{font-weight:400;color:#555;font-size:11px}table{border-collapse:collapse;width:100%;margin:0 0 8px}th,td{border:1px solid #ccc;padding:3px 6px;text-align:left;vertical-align:top}th{background:#f1f1f1}.r{text-align:right;white-space:nowrap}.d{color:#444;font-size:11px}table.sum td{text-align:center;font-size:11px;border:1px solid #ccc}table.sum b{font-size:18px}.n{color:#555;font-size:11px;margin:4px 0}tr{page-break-inside:avoid}h2,h3,h4{page-break-after:avoid}.pb{page-break-before:always}";
+function buildReport(which){
+  var rg=lbRange(),t="Logbook Report \u2013 "+(which==="dcc"?"DCC":which==="spa"?"SPA":"DCC and SPA");
+  var body="<h1>RS Anaesthesia Tracker</h1><p class='m'>"+esc(t)+" \u00b7 "+esc(fmt(P(rg.from)))+" "+P(rg.from).getFullYear()+" to "+esc(fmt(P(rg.to)))+" "+P(rg.to).getFullYear()+" \u00b7 Generated "+esc(fmt(today()))+" "+today().getFullYear()+"</p>";
+  if(which==="dcc"||which==="both")body+=repDCC(rg.from,rg.to);
+  if(which==="spa")body+=repSPA(rg.from,rg.to);
+  if(which==="both")body+="<div class='pb'></div>"+repSPA(rg.from,rg.to);
+  return "<!doctype html><html><head><meta charset='utf-8'><title>"+esc(t)+"</title><style>"+REP_CSS+"</style></head><body>"+body+"</body></html>";
+}
+function printReport(which){
+  var html=buildReport(which),f=document.createElement("iframe");
+  f.setAttribute("aria-hidden","true");f.style.cssText="position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+  document.body.appendChild(f);
+  var d=f.contentWindow.document;d.open();d.write(html);d.close();
+  setTimeout(function(){try{f.contentWindow.focus();f.contentWindow.print();}catch(e){}setTimeout(function(){if(f.parentNode)f.parentNode.removeChild(f);},60000);},300);
 }
 
 // ---------- Setup ----------
@@ -1254,6 +1312,8 @@ document.addEventListener("click",function(ev){
     case "mo":if(el.dataset.d==="0"){monthOff=0;render();}else go(+el.dataset.d);break;
     case "span":fortnight=el.dataset.v==="1";render();break;
     case "lbdom":lbDom=el.dataset.v;render();break;
+    case "lbrep":lbRepAsk=!lbRepAsk;render();break;
+    case "lbprint":lbRepAsk=false;render();printReport(el.dataset.v);break;
     case "spaadd":{var g=function(i){var e=$(i);return e?e.value:"";};
       lbForm={c:g("in-spac")||"cpd",d:g("in-spad"),t:g("in-spat").trim(),h:g("in-spah"),n:g("in-span").trim()};
       if(!lbForm.t||!lbForm.d){alert("Please add a date and a title.");break;}
