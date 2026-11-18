@@ -14,7 +14,7 @@ Repository secrets needed (Settings → Secrets and variables → Actions): `CLW
 
 ## Logbook
 
-The Logbook tab counts sessions from the CLW work calendar by theatre or location (Theatres, Obstetrics, Clinics, Out of Department), for any date range.
+The Logbook tab has DCC and SPA toggles. DCC counts sessions from the CLW work calendar by theatre or location, shown as collapsible groups with sessions and PAs (1 session = 1.25 PA), for any date range.
 
 ## Structure
 

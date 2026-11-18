@@ -120,6 +120,9 @@ button.row:active,.dayrow:active{background:var(--press)}
 .btn.ic{width:34px;padding:0}
 .btn.plain{background:none}
 .pair{display:inline-flex;gap:6px}
+.lbh .chev svg{transition:transform .15s}.lbh.open .chev svg{transform:rotate(90deg)}
+.row.sub{padding-left:32px;min-height:42px}.row.sub2{padding-left:48px;min-height:36px;font-size:14px;color:var(--ink2)}
+.lbh .cap{display:block;font-size:12px;color:var(--ink2)}
 .seg{display:inline-flex;background:var(--fill);border-radius:9px;padding:2px}
 .seg button{border:0;background:none;height:28px;padding:0 12px;border-radius:7px;font-size:13px;font-weight:500;color:var(--ink)}
 .seg button.on{background:var(--seg-on);box-shadow:var(--shadow);font-weight:600}
@@ -969,38 +972,61 @@ function renderList(){
   return sec("Leave list","<div class='card pad'>"+b+"</div>","Rich text pastes as a formatted list into Notes or Word.");
 }
 
-// ---------- Logbook (sessions from the CLW work calendar, by theatre or location) ----------
-var lbFrom=null,lbTo=null;
+// ---------- Logbook (DCC from the CLW work calendar, by theatre or location) ----------
+var lbFrom=null,lbTo=null,lbDom="dcc",lbOpen={};
 var LB=[
   ["Theatres",[/^theatre/i,/^casic/i,/flexible/i]],
   ["Obstetrics",[/^obstet(?!.*elective)/i,/elective/i]],
   ["Clinics",[/cpet/i,/hrac(?!.*note)/i,/note/i,/pre.?assess/i,/clinic/i]],
   ["Out of Department",[/hdr/i,/stokes/i,/interventional|radiolog/i,/endoscop/i]]
 ];
+var PA_PER=1.25,LB_FIXED=[];
+for(var _i=1;_i<=12;_i++)LB_FIXED.push("Theatre "+_i);
+"ABCDEF".split("").forEach(function(c){LB_FIXED.push("CASIC "+c);});
 function lbPlace(l){
   for(var g=0;g<LB.length;g++)for(var q=0;q<LB[g][1].length;q++)if(LB[g][1][q].test(l))return {g:g,p:q};
   return {g:LB.length,p:0};
 }
+function paText(n){return (Math.round(n*PA_PER*100)/100)+" PA";}
+function lbHead(key,title,sub,right,open,cls){
+  return "<button class='row lbh"+(open?" open":"")+(cls?" "+cls:"")+"' data-act='lbx' data-v='"+key+"' aria-expanded='"+(open?"true":"false")+"'><span class='l'>"+title+"<span class='cap'>"+sub+"</span></span><span class='v'><b>"+right+"</b></span><span class='chev'>"+svg(IC.chevR,14)+"</span></button>";
+}
 function renderLogbook(){
-  if(!rotaOn())return sec("","<div class='card'><div class='row'><span class='l'>Rota not connected<span class='cap'>The logbook is built from your CLW work calendar. Set it up under Setup \u2192 Rota (CLW).</span></span></div></div>");
+  var h=seg("lbdom",[["dcc","DCC"],["spa","SPA"]],lbDom);
+  h="<div style='margin:0 0 14px'>"+h+"</div>";
+  if(lbDom==="spa")return h+sec("Supporting Professional Activity","<div class='card'><div class='row'><span class='l'>Nothing recorded yet<span class='cap'>SPA categories have not been set up.</span></span></div></div>");
+  if(!rotaOn())return h+sec("Direct Clinical Care","<div class='card'><div class='row'><span class='l'>Rota not connected<span class='cap'>DCC is built from your CLW work calendar. Set it up under Setup \u2192 Rota (CLW).</span></span></div></div>");
   var from=lbFrom||K(yearBounds().start),to=lbTo||K(today());
   var names=LB.map(function(x){return x[0];}).concat(["Other","On call"]);
-  var G={},tot=0,locs={},days={};
+  var G={},tot=0,days={},canon={};
+  LB_FIXED.forEach(function(n){canon[n.toLowerCase()]=n;});
   (R.work||[]).forEach(function(e){
     if(e.d<from||e.d>to||/available/i.test(e.l||""))return;
-    var pl=isOC(e)?{g:LB.length+1,p:0}:lbPlace(e.l||""),lab=e.l||"Unlabelled";
+    var oc=isOC(e),raw=e.l||"Unlabelled",lab=canon[raw.toLowerCase()]||raw;
+    var pl=oc?{g:LB.length+1,p:0}:lbPlace(lab);
     var gr=G[pl.g]=G[pl.g]||{n:0,it:{}};
-    var it=gr.it[lab]=gr.it[lab]||{l:lab,p:pl.p,n:0};
-    it.n++;gr.n++;tot++;locs[lab]=1;days[e.d]=1;
+    var it=gr.it[lab]=gr.it[lab]||{l:lab,p:pl.p,n:0,ev:[]};
+    it.n++;it.ev.push(e);gr.n++;if(!oc){tot++;days[e.d]=1;}
   });
-  var h=sec("","<div class='card'>"+frow("From","<input type='date' id='in-lbf' data-in='lbf' value='"+from+"'>")+frow("To","<input type='date' id='in-lbt' data-in='lbt' value='"+to+"'>")+"</div>","Defaults to the start of the leave year up to today.");
-  h+="<div class='stats n3'>"+stat(tot,"Sessions")+stat(Object.keys(locs).length,"Locations")+stat(Object.keys(days).length,"Days")+"</div>";
-  if(!tot)return h+sec("","<div class='card'><div class='row'><span class='l'>No sessions in this period</span></div></div>");
+  var tg=G[0]=G[0]||{n:0,it:{}};
+  LB_FIXED.forEach(function(n){if(!tg.it[n])tg.it[n]={l:n,p:/^casic/i.test(n)?1:0,n:0,ev:[]};});
+  h+="<div class='stats n3'>"+stat(tot,"Sessions")+stat(Math.round(tot*PA_PER*100)/100,"PAs")+stat(Object.keys(days).length,"Days")+"</div>";
+  h+=sec("","<div class='card'>"+frow("From","<input type='date' id='in-lbf' data-in='lbf' value='"+from+"'>")+frow("To","<input type='date' id='in-lbt' data-in='lbt' value='"+to+"'>")+"</div>","Defaults to the start of the leave year up to today. 1 session = 1.25 PA.");
   Object.keys(G).map(Number).sort(function(a,b){return a-b;}).forEach(function(gk){
-    var gr=G[gk],its=Object.keys(gr.it).map(function(k){return gr.it[k];}).sort(function(a,b){return a.p-b.p||a.l.localeCompare(b.l,undefined,{numeric:true});});
-    h+=sec(esc(names[gk])+" \u00b7 "+gr.n,"<div class='card'>"+its.map(function(x){return row(esc(x.l),"<b>"+x.n+"</b>");}).join("")+"</div>");
+    var gr=G[gk],oc=gk===LB.length+1,gkey="g"+gk,open=!!lbOpen[gkey];
+    var its=Object.keys(gr.it).map(function(k){return gr.it[k];}).sort(function(a,b){return a.p-b.p||a.l.localeCompare(b.l,undefined,{numeric:true});});
+    var body=lbHead(gkey,esc(names[gk]),gr.n+(oc?" on-call"+(gr.n===1?"":"s"):" session"+(gr.n===1?"":"s")),oc?"":paText(gr.n),open);
+    if(open)its.forEach(function(x,ix){
+      var ikey="i"+gk+"-"+ix,iopen=!!lbOpen[ikey]&&x.n>0;
+      body+="<div class='lbi'>"+(x.n?lbHead(ikey,esc(x.l),x.n+" session"+(x.n===1?"":"s"),oc?"":paText(x.n),iopen,"sub"):"<div class='row sub'><span class='l'>"+esc(x.l)+"<span class='cap'>0 sessions</span></span><span class='v'>"+(oc?"":"0 PA")+"</span></div>");
+      if(iopen)x.ev.slice().sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:0;}).forEach(function(e){
+        var si=SI[e.s];body+="<div class='row sub2'><span class='l'>"+esc(fmt(P(e.d)))+"</span><span class='v'>"+(si!=null?SN[si]:"")+"</span></div>";
+      });
+      body+="</div>";
+    });
+    h+=sec("","<div class='card'>"+body+"</div>");
   });
-  return h+"<p class='foot'>Counted from your CLW work calendar. Available Consultants isn't counted.</p>";
+  return h+"<p class='foot'>Counted from your CLW work calendar. Available Consultants isn't counted, and on-calls aren't included in the session or PA totals.</p>";
 }
 
 // ---------- Setup ----------
@@ -1165,6 +1191,8 @@ document.addEventListener("click",function(ev){
     case "wk":if(el.dataset.d==="0"){weekOff=0;render();}else go(+el.dataset.d);break;
     case "mo":if(el.dataset.d==="0"){monthOff=0;render();}else go(+el.dataset.d);break;
     case "span":fortnight=el.dataset.v==="1";render();break;
+    case "lbdom":lbDom=el.dataset.v;render();break;
+    case "lbx":lbOpen[el.dataset.v]=!lbOpen[el.dataset.v];render();break;
     case "mmode":monthMode=el.dataset.v;render();break;
     case "day":openDay(k);break;
     case "sumfmt":sumFmt=el.dataset.v;render();break;
